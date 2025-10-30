@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quals Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left Sidebar */
+        .left-sidebar {
+            width: 280px;
+            background: #0e2841;
+            color: #ecf0f1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid #34495e;
+            background: #34495e;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: #95a5a6;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #2c3e50;
+            color: #267a45;
+            border-bottom: 2px solid #267a45;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #ecf0f1;
+        }
+
+        .folders-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+
+        .folder-group {
+            margin-bottom: 8px;
+        }
+
+        .folder-header {
+            padding: 10px 20px;
+            font-size: 11px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .folder-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .folder-item:hover {
+            background: #34495e;
+        }
+
+        .folder-item.active {
+            background: #267a45;
+            color: white;
+        }
+
+        .folder-icon {
+            font-size: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 32px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #267a45;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            padding: 16px 32px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #d5dbdb;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+        }
+
+        .qual-profile {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            margin-bottom: 32px;
+        }
+
+        .profile-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .profile-section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #267a45;
+        }
+
+        .section-content {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            background: #e8f4f8;
+            color: #2980b9;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .team-composition {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .team-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .team-role {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 4px;
+        }
+
+        .team-count {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 280px;
+            background: white;
+            border-left: 1px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 24px 20px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .sidebar-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metadata-item {
+            margin-bottom: 16px;
+        }
+
+        .metadata-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 4px;
+        }
+
+        .metadata-value {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .download-section {
+            padding: 20px;
+        }
+
+        .download-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #267a45;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background: #2980b9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 64px 32px;
+            color: #95a5a6;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d5dbdb;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="sidebar-header">
+                <h2>Quals Library</h2>
+                <p>Client Qualifications Database</p>
+            </div>
+            
+            <div class="sidebar-tabs">
+                <button class="tab-btn active" data-tab="region">
+                    <span class="folder-icon">🌍</span>
+                    <span>Region</span>
+                </button>
+                <button class="tab-btn" data-tab="client">
+                    <span class="folder-icon">👥</span>
+                    <span>Client</span>
+                </button>
+            </div>
+            
+            <div class="folders-container" id="foldersContainer">
+                <!-- Folders will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Quals Library</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="addQualBtn">
+                        <span>+</span>
+                        <span>Add a Qual</span>
+                    </button>
+                    <button class="btn btn-secondary" id="downloadAllBtn">
+                        <span>⬇</span>
+                        <span>Download All Quals</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Year of Engagement</label>
+                    <select id="yearFilter">
+                        <option value="">All Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Client Sector</label>
+                    <select id="sectorFilter">
+                        <option value="">All Sectors</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Deal Size</label>
+                    <select id="dealSizeFilter">
+                        <option value="">All Sizes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>Select a qual to view</h3>
+                    <p>Choose a qualification from the sidebar to see details</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar" id="rightSidebar" style="display: none;">
+            <div class="sidebar-section">
+                <h3>Metadata</h3>
+                <div id="metadataContainer"></div>
+            </div>
+            
+            <div class="download-section">
+                <h3>Download Options</h3>
+                <button class="download-btn" id="downloadDocBtn">
+                    <span>📄</span>
+                    <span>Download DOC</span>
+                </button>
+                <button class="download-btn" id="downloadTxtBtn">
+                    <span>📝</span>
+                    <span>Download TXT</span>
+                </button>
+                <button class="download-btn" id="downloadPptBtn">
+                    <span>📊</span>
+                    <span>Download PPT</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Qual Modal -->
+    <div class="modal" id="addQualModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Qual</h2>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <form id="addQualForm">
+                <div class="form-group">
+                    <label>Client Name *</label>
+                    <input type="text" name="clientName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Client Sector *</label>
+                    <select name="clientSector" required>
+                        <option value="">Select Sector</option>
+                        <option value="Agriculture & Food Systems">Agriculture & Food Systems</option>
+                        <option value="Health Systems & Public Health">Health Systems & Public Health</option>
+                        <option value="Education & Skills Development">Education & Skills Development</option>
+                        <option value="Climate & Environment">Climate & Environment</option>
+                        <option value="Renewable Energy">Renewable Energy</option>
+                        <option value="Digital Economy & Innovation">Digital Economy & Innovation</option>
+                        <option value="Trade & Regional Integration">Trade & Regional Integration</option>
+                        <option value="Public Financial Management & Governance">Public Financial Management & Governance</option>
+                        <option value="Urban Development & Infrastructure">Urban Development & Infrastructure</option>
+                        <option value="SME Development & Entrepreneurship">SME Development & Entrepreneurship</option>
+                        <option value="Gender & Inclusion">Gender & Inclusion</option>
+                        <option value="Humanitarian Response & Resilience">Humanitarian Response & Resilience</option>
+                        <option value="Youth Employment & Workforce Development">Youth Employment & Workforce Development</option>
+                        <option value="Mining & Natural Resource Governance">Mining & Natural Resource Governance</option>
+                        <option value="Social Protection & Safety Nets">Social Protection & Safety Nets</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Client Region *</label>
+                    <select name="clientRegion" id="clientRegion" required>
+                        <option value="">Select Region</option>
+                        <option value="East Africa">East Africa</option>
+                        <option value="West Africa">West Africa</option>
+                        <option value="Southern Africa">Southern Africa</option>
+                        <option value="North Africa">North Africa</option>
+                        <option value="Central Africa">Central Africa</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Country *</label>
+                    <select name="country" id="countrySelect" required disabled>
+                        <option value="">Select Region First</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Year of Engagement *</label>
+                    <input type="number" name="yearOfEngagement" min="2000" max="2025" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Project Duration (Months) *</label>
+                    <input type="number" name="projectDuration" min="1" max="60" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Project Completed *</label>
+                    <select name="projectCompleted" required>
+                        <option value="">Select Status</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No - In Progress</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Engagement Title *</label>
+                    <input type="text" name="engagementTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Engagement Summary *</label>
+                    <textarea name="engagementSummary" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Business Challenge *</label>
+                    <textarea name="businessChallenge" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Solution Overview *</label>
+                    <textarea name="solutionOverview" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Service Line *</label>
+                    <select name="serviceLine" required>
+                        <option value="">Select Service Line</option>
+                        <option value="Strategy & Policy Advisory">Strategy & Policy Advisory</option>
+                        <option value="Delivery & Programme Implementation">Delivery & Programme Implementation</option>
+                        <option value="Benchmarking & Landscape Assessment">Benchmarking & Landscape Assessment</option>
+                        <option value="Research & Insights">Research & Insights</option>
+                        <option value="Digital Transformation Support">Digital Transformation Support</option>
+                        <option value="Investment & Transaction Advisory">Investment & Transaction Advisory</option>
+                        <option value="Monitoring, Evaluation & Learning">Monitoring, Evaluation & Learning</option>
+                        <option value="Capacity Building & Technical Assistance">Capacity Building & Technical Assistance</option>
+                        <option value="Knowledge Management & Thought Leadership">Knowledge Management & Thought Leadership</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Capability Tags (comma-separated) *</label>
+                    <input type="text" name="capabilityTags" placeholder="e.g. Digital Lending, Credit Risk, Process Automation" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Deal Type *</label>
+                    <select name="dealType" required>
+                        <option value="">Select Deal Type</option>
+                        <option value="Advisory">Advisory</option>
+                        <option value="Implementation">Implementation</option>
+                        <option value="Research">Research</option>
+                        <option value="Technical Assistance">Technical Assistance</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Deal Value Band *</label>
+                    <select name="dealValueBand" required>
+                        <option value="">Select Deal Size</option>
+                        <option value="USD <100K">USD <100K</option>
+                        <option value="USD 100K-500K">USD 100K-500K</option>
+                        <option value="USD 500K-1M">USD 500K-1M</option>
+                        <option value="USD 1-5M">USD 1-5M</option>
+                        <option value="USD 5-10M">USD 5-10M</option>
+                        <option value="USD >10M">USD >10M</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Contracting Entity *</label>
+                    <input type="text" name="contractingEntity" placeholder="e.g. DOT East Africa LLP" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Team Lead *</label>
+                    <input type="text" name="teamLead" placeholder="Name (Title, Practice)" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Outcome & Impact *</label>
+                    <textarea name="outcomeImpact" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Client Testimonial Available *</label>
+                    <select name="clientTestimonial" required>
+                        <option value="">Select Option</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Reusability Score *</label>
+                    <select name="reusabilityScore" required>
+                        <option value="">Select Score</option>
+                        <option value="1-Highly Specific">1 - Highly Specific</option>
+                        <option value="2-Limited Reuse">2 - Limited Reuse</option>
+                        <option value="3-Moderately Reusable">3 - Moderately Reusable</option>
+                        <option value="4-Highly Reusable">4 - Highly Reusable</option>
+                        <option value="5-Fully Reusable">5 - Fully Reusable</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Confidentiality Level *</label>
+                    <select name="confidentialityLevel" required>
+                        <option value="">Select Level</option>
+                        <option value="1-Public">1 - Public (Shareable) - Can be used in marketing decks</option>
+                        <option value="2-Internal Use">2 - Internal Use - Can be shared within the firm</option>
+                        <option value="3-Client-Approved External">3 - Client-Approved External - Only client-facing approved extracts</option>
+                        <option value="4-Restricted">4 - Restricted - Limited to engagement team and partners</option>
+                        <option value="5-NDA/Highly Confidential">5 - NDA/Highly Confidential - Requires NDA or Partner Approval</option>
+                    </select>
+                </div>
+                
+                <div class="header-actions" style="margin-top: 24px;">
+                    <button type="submit" class="btn btn-primary">Submit Qual</button>
+                    <button type="button" class="btn btn-secondary" id="cancelFormBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpBLVcpg_OfJAjtpn1xG5uzNum6incqY_E8XQ2AhPewqMqw9cftCmn1c3wrCAX5g0p/exec'; // Deploy as web app and paste URL here
+    
+    let qualsDatabase = [];
+    let currentTab = 'region';
+    let selectedQual = null;
+
+    // Initialize
+    async function init() {
+        await loadQualifications();
+        renderFolders();
+        populateFilters();
+        setupEventListeners();
+    }
+
+    // Load qualifications from Google Sheets
+    async function loadQualifications() {
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=getAllQuals`);
+            const data = await response.json();
+            qualsDatabase = data.quals || [];
+        } catch (error) {
+            console.error('Error loading qualifications:', error);
+            // Fallback to sample data
+            qualsDatabase = [/* your sample data here */];
+        }
+    }
+
+    // Updated form submission
+    async function submitQualForm(formData) {
+        try {
+            const params = new URLSearchParams();
+            Object.keys(formData).forEach(key => {
+                params.append(key, formData[key]);
+            });
+            params.append('action', 'addQual');
+
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                alert(`Success! ${result.message}`);
+                await loadQualifications(); // Reload data
+                renderFolders();
+                return true;
+            } else {
+                alert('Error submitting qual: ' + (result.error || 'Unknown error'));
+                return false;
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Error submitting qualification. Please try again.');
+            return false;
+        }
+    }
+
+    // Update your form submission handler
+    document.getElementById('addQualForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        
+        // Add team composition fields (you'll need to add these to your form)
+        data.partnerCount = 1; // Example - add these fields to your form
+        data.directorCount = 1;
+        data.seniorManagerCount = 2;
+        data.consultantCount = 4;
+        data.analystCount = 2;
+        
+        const success = await submitQualForm(data);
+        
+        if (success) {
+            modal.classList.remove('active');
+            e.target.reset();
+        }
+    });
+
+    // Update your form to include team composition fields
+    // Add these fields before the submit button in your modal form:
+    /*
+    <div class="form-group">
+        <label>Team Composition</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+                <label>Partners</label>
+                <input type="number" name="partnerCount" min="0" value="1" required>
+            </div>
+            <div>
+                <label>Directors</label>
+                <input type="number" name="directorCount" min="0" value="1" required>
+            </div>
+            <div>
+                <label>Senior Managers</label>
+                <input type="number" name="seniorManagerCount" min="0" value="2" required>
+            </div>
+            <div>
+                <label>Consultants</label>
+                <input type="number" name="consultantCount" min="0" value="4" required>
+            </div>
+            <div>
+                <label>Analysts</label>
+                <input type="number" name="analystCount" min="0" value="2" required>
+            </div>
+        </div>
+    </div>
+    */
+
+    // The rest of your existing JavaScript functions remain the same...
+    // (renderFolders, displayQual, populateFilters, setupEventListeners, etc.)
+    
+
+        let currentTab = 'region';
+        let selectedQual = null;
+
+        // Initialize
+        function init() {
+            renderFolders();
+            populateFilters();
+            setupEventListeners();
+        }
+
+        // Render folders based on active tab
+        function renderFolders() {
+            const container = document.getElementById('foldersContainer');
+            container.innerHTML = '';
+
+            if (currentTab === 'region') {
+                const regions = [...new Set(qualsDatabase.map(q => q.ClientRegion))];
+                regions.forEach(region => {
+                    const quals = qualsDatabase.filter(q => q.ClientRegion === region);
+                    const folderGroup = document.createElement('div');
+                    folderGroup.className = 'folder-group';
+                    folderGroup.innerHTML = `
+                        <div class="folder-header">${region}</div>
+                        ${quals.map(q => `
+                            <div class="folder-item" data-id="${q.SubmissionID}">
+                                <span class="folder-icon">📄</span>
+                                <span>${q.EngagementTitle}</span>
+                            </div>
+                        `).join('')}
+                    `;
+                    container.appendChild(folderGroup);
+                });
+            } else {
+                const clients = [...new Set(qualsDatabase.map(q => q.ClientName))];
+                clients.forEach(client => {
+                    const quals = qualsDatabase.filter(q => q.ClientName === client);
+                    const folderGroup = document.createElement('div');
+                    folderGroup.className = 'folder-group';
+                    folderGroup.innerHTML = `
+                        <div class="folder-header">${client}</div>
+                        ${quals.map(q => `
+                            <div class="folder-item" data-id="${q.SubmissionID}">
+                                <span class="folder-icon">📄</span>
+                                <span>${q.EngagementTitle}</span>
+                            </div>
+                        `).join('')}
+                    `;
+                    container.appendChild(folderGroup);
+                });
+            }
+
+            // Add click listeners to folder items
+            document.querySelectorAll('.folder-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.folder-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    const qualId = item.dataset.id;
+                    displayQual(qualId);
+                });
+            });
+        }
+
+        // Display qual details
+        function displayQual(qualId) {
+            const qual = qualsDatabase.find(q => q.SubmissionID === qualId);
+            if (!qual) return;
+
+            selectedQual = qual;
+            const contentArea = document.getElementById('contentArea');
+            const rightSidebar = document.getElementById('rightSidebar');
+
+            contentArea.innerHTML = `
+                <div class="qual-profile">
+                    <div class="profile-header">
+                        <h1 class="profile-title">${qual.EngagementTitle}</h1>
+                        <div class="profile-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Client</span>
+                                <span class="meta-value">${qual.ClientName}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Sector</span>
+                                <span class="meta-value">${qual.ClientSector}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Region</span>
+                                <span class="meta-value">${qual.ClientRegion}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Year</span>
+                                <span class="meta-value">${qual.YearOfEngagement}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Status</span>
+                                <span class="status-badge status-${qual.Status.toLowerCase()}">${qual.Status}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Engagement Summary</h3>
+                        <p class="section-content">${qual.EngagementSummary}</p>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Business Challenge</h3>
+                        <p class="section-content">${qual.BusinessChallenge}</p>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Solution Overview</h3>
+                        <p class="section-content">${qual.SolutionOverview}</p>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Outcome & Impact</h3>
+                        <p class="section-content">${qual.OutcomeImpact}</p>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Capability Tags</h3>
+                        <div class="tags">
+                            ${qual.CapabilityTags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Team Composition</h3>
+                        <div class="team-composition">
+                            ${Object.entries(qual.DeliveryTeamComposition).map(([role, count]) => `
+                                <div class="team-item">
+                                    <div class="team-role">${role}</div>
+                                    <div class="team-count">${count}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Team Lead</h3>
+                        <p class="section-content">${qual.TeamLead}</p>
+                    </div>
+                </div>
+            `;
+
+            // Update right sidebar metadata
+            const metadataContainer = document.getElementById('metadataContainer');
+            metadataContainer.innerHTML = `
+                <div class="metadata-item">
+                    <div class="metadata-label">Submission ID</div>
+                    <div class="metadata-value">${qual.SubmissionID}</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Service Line</div>
+                    <div class="metadata-value">${qual.ServiceLine}</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Deal Type</div>
+                    <div class="metadata-value">${qual.DealType}</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Deal Value</div>
+                    <div class="metadata-value">${qual.DealValueBand}</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Duration</div>
+                    <div class="metadata-value">${qual.ProjectDuration}</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Reusability Score</div>
+                    <div class="metadata-value">${qual.ReusabilityScore}</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Confidentiality</div>
+                    <div class="metadata-value">${qual.ConfidentialityLevel}</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Contracting Entity</div>
+                    <div class="metadata-value">${qual.ContractingEntity}</div>
+                </div>
+            `;
+
+            rightSidebar.style.display = 'flex';
+        }
+
+        // Populate filter dropdowns
+        function populateFilters() {
+            const years = [...new Set(qualsDatabase.map(q => q.YearOfEngagement))].sort().reverse();
+            const sectors = [...new Set(qualsDatabase.map(q => q.ClientSector))].sort();
+            const dealSizes = [...new Set(qualsDatabase.map(q => q.DealValueBand))].sort();
+
+            const yearFilter = document.getElementById('yearFilter');
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+
+            const sectorFilter = document.getElementById('sectorFilter');
+            sectors.forEach(sector => {
+                const option = document.createElement('option');
+                option.value = sector;
+                option.textContent = sector;
+                sectorFilter.appendChild(option);
+            });
+
+            const dealSizeFilter = document.getElementById('dealSizeFilter');
+            dealSizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = size;
+                dealSizeFilter.appendChild(option);
+            });
+        }
+
+        // Country data by region
+        const countriesByRegion = {
+            "East Africa": ["Kenya", "Tanzania", "Uganda", "Rwanda", "Burundi", "South Sudan", "Ethiopia", "Somalia", "Djibouti"],
+            "West Africa": ["Nigeria", "Ghana", "Senegal", "Côte d'Ivoire", "Mali", "Burkina Faso", "Niger", "Benin", "Togo", "Guinea", "Sierra Leone", "Liberia", "Gambia", "Cape Verde", "Mauritania"],
+            "Southern Africa": ["South Africa", "Botswana", "Namibia", "Zimbabwe", "Zambia", "Malawi", "Mozambique", "Lesotho", "Eswatini", "Angola"],
+            "North Africa": ["Egypt", "Morocco", "Tunisia", "Algeria", "Libya", "Sudan"],
+            "Central Africa": ["Cameroon", "Central African Republic", "Chad", "Congo", "Democratic Republic of Congo", "Equatorial Guinea", "Gabon", "São Tomé and Príncipe"]
+        };
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTab = btn.dataset.tab;
+                    renderFolders();
+                });
+            });
+
+            // Region-Country dependency
+            document.getElementById('clientRegion').addEventListener('change', function() {
+                const countrySelect = document.getElementById('countrySelect');
+                const selectedRegion = this.value;
+                
+                countrySelect.innerHTML = '<option value="">Select Country</option>';
+                
+                if (selectedRegion && countriesByRegion[selectedRegion]) {
+                    countrySelect.disabled = false;
+                    countriesByRegion[selectedRegion].forEach(country => {
+                        const option = document.createElement('option');
+                        option.value = country;
+                        option.textContent = country;
+                        countrySelect.appendChild(option);
+                    });
+                } else {
+                    countrySelect.disabled = true;
+                    countrySelect.innerHTML = '<option value="">Select Region First</option>';
+                }
+            });
+
+            // Modal controls
+            const modal = document.getElementById('addQualModal');
+            document.getElementById('addQualBtn').addEventListener('click', () => {
+                modal.classList.add('active');
+            });
+
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            document.getElementById('cancelFormBtn').addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Form submission
+            document.getElementById('addQualForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('New qual submission received! In production, this would save to your Excel database.');
+                modal.classList.remove('active');
+                e.target.reset();
+            });
+
+            // Filters
+            document.getElementById('yearFilter').addEventListener('change', applyFilters);
+            document.getElementById('sectorFilter').addEventListener('change', applyFilters);
+            document.getElementById('dealSizeFilter').addEventListener('change', applyFilters);
+
+            // Download buttons
+            document.getElementById('downloadAllBtn').addEventListener('click', () => {
+                alert('Downloading all quals... In production, this would export filtered quals to Excel.');
+            });
+
+            document.getElementById('downloadDocBtn').addEventListener('click', () => {
+                if (selectedQual) {
+                    showComingSoonModal('DOC');
+                }
+            });
+
+            document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+                if (selectedQual) {
+                    downloadQual('TXT');
+                }
+            });
+
+            document.getElementById('downloadPptBtn').addEventListener('click', () => {
+                if (selectedQual) {
+                    showComingSoonModal('PPT');
+                }
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const yearFilter = document.getElementById('yearFilter').value;
+            const sectorFilter = document.getElementById('sectorFilter').value;
+            const dealSizeFilter = document.getElementById('dealSizeFilter').value;
+
+            // Filter logic would go here
+            // For now, just show alert
+            const filters = [];
+            if (yearFilter) filters.push(`Year: ${yearFilter}`);
+            if (sectorFilter) filters.push(`Sector: ${sectorFilter}`);
+            if (dealSizeFilter) filters.push(`Deal Size: ${dealSizeFilter}`);
+
+            if (filters.length > 0) {
+                console.log('Applied filters:', filters.join(', '));
+            }
+        }
+
+        // Download qual in specified format
+        function downloadQual(format) {
+            if (!selectedQual) return;
+
+            let content = '';
+            const filename = `${selectedQual.SubmissionID}_${selectedQual.ClientName.replace(/\s+/g, '_')}`;
+
+            if (format === 'TXT') {
+                content = formatAsText(selectedQual);
+                downloadFile(content, `${filename}.txt`, 'text/plain');
+            } else if (format === 'DOC') {
+                alert(`Downloading ${selectedQual.EngagementTitle} as DOC file...\n\nIn production, this would generate a formatted Word document.`);
+            } else if (format === 'PPT') {
+                alert(`Downloading ${selectedQual.EngagementTitle} as PPT file...\n\nIn production, this would generate a PowerPoint presentation.`);
+            }
+        }
+
+        // Format qual as plain text
+        function formatAsText(qual) {
+            return `
+CLIENT QUALIFICATION SUBMISSION
+================================
+
+Submission ID: ${qual.SubmissionID}
+Client Name: ${qual.ClientName}
+Sector: ${qual.ClientSector}
+Region: ${qual.ClientRegion}
+Year of Engagement: ${qual.YearOfEngagement}
+
+ENGAGEMENT TITLE
+${qual.EngagementTitle}
+
+ENGAGEMENT SUMMARY
+${qual.EngagementSummary}
+
+BUSINESS CHALLENGE
+${qual.BusinessChallenge}
+
+SOLUTION OVERVIEW
+${qual.SolutionOverview}
+
+OUTCOME & IMPACT
+${qual.OutcomeImpact}
+
+SERVICE LINE
+${qual.ServiceLine}
+
+CAPABILITY TAGS
+${qual.CapabilityTags.join(', ')}
+
+DEAL INFORMATION
+- Deal Type: ${qual.DealType}
+- Deal Value: ${qual.DealValueBand}
+- Duration: ${qual.ProjectDuration}
+- Status: ${qual.Status}
+
+TEAM COMPOSITION
+${Object.entries(qual.DeliveryTeamComposition).map(([role, count]) => `- ${role}: ${count}`).join('\n')}
+
+TEAM LEAD
+${qual.TeamLead}
+
+ADDITIONAL INFORMATION
+- Contracting Entity: ${qual.ContractingEntity}
+- Reusability Score: ${qual.ReusabilityScore}
+- Confidentiality Level: ${qual.ConfidentialityLevel}
+- Client Testimonial Available: ${qual.ClientTestimonialAvailable ? 'Yes' : 'No'}
+`;
+        }
+
+        // Download file helper
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>
